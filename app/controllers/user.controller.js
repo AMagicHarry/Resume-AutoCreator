@@ -1,24 +1,26 @@
 const db = require("../models");
-const University = db.university;
-const Comapny = db.company;
+const User = db.user;
 
-// Create and Save a new University
+// Create and Save a new User
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.university) {
-    res.status(400).send({ message: "university can not be empty!" });
+  if (!req.body.name) {
+    res.status(400).send({ message: "user can not be empty!" });
     return;
   }
 
-  // Create a University
-  const universitys = new University({
+  // Create a User
+  const users = new User({
     country: req.body.country,
-    university: req.body.university,
+    name: req.body.name,
+    city: req.body.city,
+    address: req.body.address,
+    phonenumber: req.body.phonenumber
   });
 
-  // Save University in the database
-  universitys
-    .save(universitys)
+  // Save User in the database
+  users
+    .save(users)
     .then(data => {
       console.log(data)
       // res.send(data);
@@ -26,58 +28,24 @@ exports.create = (req, res) => {
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while creating the University."
+          err.message || "Some error occurred while creating the User."
       });
     });
 };
 
-// Create and Save a new Company
-exports.create = (req, res) => {
-  // Validate request
-  if (!req.body.company) {
-    res.status(400).send({ message: "company can not be empty!" });
-    return;
-  }
-
-  // Create a Company
-  const companys = new Comapny({
-    country: req.body.country,
-    company: req.body.company,
-  });
-
-  // Save Company in the database
-  companys
-    .save(companys)
+// Retrieve all Users from the database.
+exports.findAll = (req, res) => {
+  User.find()
     .then(data => {
-      console.log(data)
-      // res.send(data);
+      res.send(data);
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while creating the Company."
+          err.message || "Some error occurred while retrieving users."
       });
     });
 };
-
-// Retrieve all Tutorials from the database.
-// exports.findAll = (req, res) => {
-//   const title = req.query.title;
-//   var condition = title ? { title: { $regex: new RegExp(title), $options: "i" } } : {};
-
-//   Tutorial.find(condition)
-//     .then(data => {
-//       // res.json({ message: "Hi!" });
-//       res.send(data);
-      
-//     })
-//     .catch(err => {
-//       res.status(500).send({
-//         message:
-//           err.message || "Some error occurred while retrieving tutorials."
-//       });
-//     });
-// };
 
 // Find a single Tutorial with an id
 // exports.findOne = (req, res) => {

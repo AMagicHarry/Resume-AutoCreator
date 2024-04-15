@@ -1,16 +1,28 @@
 module.exports = app => {
   const university = require("../controllers/university.controller.js");
+  const company = require("../controllers/company.controller.js");
+  const user = require("../controllers/user.controller.js");
 
   var router = require("express").Router();
 
   //Create a new University
   router.post("/university", university.create);
 
-  // Create a new Tutorial
-  // router.post("/", tutorials.create);
+  // Retrieve all Universitys
+  router.get("/university", university.findAll);
 
-  // // Retrieve all Tutorials
-  // router.get("/", tutorials.findAll);
+  // Create a new Company
+  router.post("/company", company.create);
+
+  // Retrieve all Companys
+  router.get("/company", company.findAll);
+
+  // Create a new User
+  router.post("/user", user.create);
+
+  // Retrieve all Users
+  router.get("/user", user.findAll);
+
 
   // // Retrieve all published Tutorials
   // router.get("/published", tutorials.findAllPublished);

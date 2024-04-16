@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const csv = require("csvtojson");
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
+const filepath = 'data.csv';
 const db = require("./app/models");
 db.mongoose
   .connect(db.url, {
@@ -23,6 +25,7 @@ db.mongoose
   })
   .then(() => {
     console.log("Connected to the database!");
+
   })
   .catch(err => {
     console.log("Cannot connect to the database!", err);
@@ -31,15 +34,23 @@ db.mongoose
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to bezkoder application." });
+  res.json({ message: "Welcome to Resume Auto Creator." });
 });
 
-require("./app/routes/turorial.routes")(app);
+require("./app/routes/resume.routes")(app);
 require("./app/routes/countrybase.routes")(app);
 require("./app/routes/titlebase.routes")(app);
+
+// async function main() {
+//   const jsonArray = await csv().fromFile(filepath);
+//   const User = db.user;
+//   await User.insertMany(jsonArray);
+// }
+// main()
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
+
 });

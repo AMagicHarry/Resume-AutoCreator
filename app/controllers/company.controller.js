@@ -13,6 +13,7 @@ exports.create = (req, res) => {
   const companys = new Comapny({
     country: req.body.country,
     company: req.body.company,
+    city: req.body.city
   });
 
   // Save Company in the database

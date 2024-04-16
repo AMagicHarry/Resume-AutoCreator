@@ -13,6 +13,7 @@ exports.create = (req, res) => {
   const experiences = new Experience({
     title: req.body.title,
     level: req.body.level,
+    subTitle: req.body.subTitle,
     experience: req.body.experience,
   });
 

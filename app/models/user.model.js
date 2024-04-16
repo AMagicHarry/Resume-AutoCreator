@@ -4,8 +4,11 @@ module.exports = mongoose => {
       country: String,
       name: String,
       city: String,
+      state: String,
       address: String,
-      phonenumber: String
+      zipcode: String,
+      phonenumber: String,
+      nationalID: String
     },
     { timestamps: true }
   );

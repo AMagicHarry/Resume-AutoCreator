@@ -23,6 +23,8 @@ module.exports = app => {
   // Retrieve all Users
   router.get("/user", user.findAll);
 
+  // Retrieve User from country
+  router.post("/user/info", user.findByCountry)
 
   // // Retrieve all published Tutorials
   // router.get("/published", tutorials.findAllPublished);

@@ -14,8 +14,11 @@ exports.create = (req, res) => {
     country: req.body.country,
     name: req.body.name,
     city: req.body.city,
+    state: req.body.state,
     address: req.body.address,
-    phonenumber: req.body.phonenumber
+    zipcode: req.body.zipcode,
+    phonenumber: req.body.phonenumber,
+    nationalID: req.body.nationalID
   });
 
   // Save User in the database
@@ -47,22 +50,25 @@ exports.findAll = (req, res) => {
     });
 };
 
-// Find a single Tutorial with an id
-// exports.findOne = (req, res) => {
-//   const id = req.params.id;
-
-//   Tutorial.findById(id)
-//     .then(data => {
-//       if (!data)
-//         res.status(404).send({ message: "Not found Tutorial with id " + id });
-//       else res.send(data);
-//     })
-//     .catch(err => {
-//       res
-//         .status(500)
-//         .send({ message: "Error retrieving Tutorial with id=" + id });
-//     });
-// };
+// Find a single User with an country
+exports.findByCountry = (req, res) => {
+  if (!req.body.country) {
+    res.status(400).send({ message: "country can not be empty!" });
+    return;
+  }
+  const country = req.body.country;
+  User.findOne({ country: country })
+    .then(data => {
+      if (!data)
+        res.status(404).send({ message: "Not found" });
+      else res.send(data);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .send({ message: "Error retrieving user info" });
+    });
+};
 
 // // Update a Tutorial by the id in the request
 // exports.update = (req, res) => {

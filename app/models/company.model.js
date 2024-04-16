@@ -2,7 +2,8 @@ module.exports = mongoose => {
   var schema = mongoose.Schema(
     {
       country: String,
-      company: String
+      company: String,
+      city: String
     },
     { timestamps: true }
   );

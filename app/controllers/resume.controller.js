@@ -56,6 +56,8 @@ exports.findByCountry = (req, res) => {
   // const userPromise = User.findOne({ country: country });
   // const universityPromise = University.findOne({ country: country });
   // const companyPromise = Company.find({ country: country }).limit(numberOfCompany);
+  // const bioPromise = Bio.findOne({ title: title });
+  // const skillPromise = Skill.findOne({ title: title });
   const userPromise = User.aggregate([
     { $match: { country: country } },
     { $sample: { size: 1 } }
@@ -68,38 +70,49 @@ exports.findByCountry = (req, res) => {
     { $match: { country: country } },
     { $sample: { size: 1 } }
   ]);
-  
-  const bioPromise = Bio.findOne({ title: title });
-  const skillPromise = Skill.findOne({ title: title });
+  const bioPromise = Bio.aggregate([
+    { $match: { title: title } },
+    { $sample: { size: 1 } }
+  ]);
+  const skillPromise = Skill.aggregate([
+    { $match: { title: title } },
+    { $sample: { size: 1 } }
+  ]);
+
   const juniorExperiencePromise = Experience.find({ title: title, level: "junior" }).limit(juniorYear);
   const middleExperiencePromise = Experience.find({ title: title, level: "middle" }).limit(middleYear);
   const seniorExperiencePromise = Experience.find({ title: title, level: "senior" }).limit(seniorYear);
 
   Promise.all([userPromise, universityPromise, companyPromise, bioPromise, skillPromise, juniorExperiencePromise, middleExperiencePromise, seniorExperiencePromise])
     .then((data) => {
-      console.log(yearsForEachCompany)
       const [userData, universityData, companyData, bioData, skillData, juniorData, middleData, seniorData] = data;
       const userResponse = userData && userData.length ? { ...userData[0], birthYear: randomYear } : {};
       const universityResponse = universityData && universityData.length ? { ...universityData[0], enterYear: enterYear } : {};
-      const profileData = bioData ? { ...bioData.toJSON(), skill: skillData?.skill } : {};
-     
+      const profileData = bioData && bioData.length ? { ...bioData[0], skill: skillData[0]?.skill } : {};
+
       let addYearMiddle = 0;
       let addYearSenior = 0;
 
       for (var i = 0; i < juniorYear; i++) {
         juniorData[i] = juniorData[i].toObject();
         juniorData[i].company = companyData[i].company;
+        juniorData[i].city = companyData[i].city;
+        juniorData[i].country = companyData[i].country;
         juniorData[0].enterYear = enterYear + 4;
       }
       for (var i = juniorYear; i < juniorYear + middleYear; i++) {
         middleData[i - juniorYear] = middleData[i - juniorYear].toObject();
         middleData[i - juniorYear].company = companyData[i].company;
+        middleData[i - juniorYear].city = companyData[i].city;
+        middleData[i - juniorYear].country = companyData[i].country;
         addYearMiddle += yearsForEachCompany[i - juniorYear]
         middleData[i - juniorYear].enterYear = juniorData[0].enterYear + addYearMiddle;
       }
       for (var i = juniorYear + middleYear; i < juniorYear + middleYear + seniorYear; i++) {
         seniorData[i - juniorYear - middleYear] = seniorData[i - juniorYear - middleYear].toObject();
         seniorData[i - juniorYear - middleYear].company = companyData[i].company;
+        seniorData[i - juniorYear - middleYear].city = companyData[i].city;
+        seniorData[i - juniorYear - middleYear].country = companyData[i].country;
         addYearSenior += yearsForEachCompany[i - 1];
         seniorData[i - juniorYear - middleYear].enterYear = middleData[middleYear - 1].enterYear + addYearSenior;
       }
